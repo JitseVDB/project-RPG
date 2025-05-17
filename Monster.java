@@ -121,7 +121,7 @@ public class Monster extends Entity {
      *
      * @effect  Each newly created anchor point is added to this monster using addAnchorPoint.
      *          | for each i in 1..amount:
-     *          |   addAnchorPoint(new AnchorPoint(null))
+     *          |   addAnchorPoint(new AnchorPoint(anchor_i))
      *
      * @post    The total number of anchor points for this monster will increase by the generated amount.
      *          | getNbAnchorPoints() == amount
@@ -134,7 +134,7 @@ public class Monster extends Entity {
         int amount = random.nextInt(101);
 
         for (int i = 1; i <= amount; i++) {
-            addAnchorPoint(new AnchorPoint(null));
+            addAnchorPoint(new AnchorPoint("anchor_" + i));
         }
     }
 
@@ -158,8 +158,8 @@ public class Monster extends Entity {
 
         for (int i = 1; i <= maxItems; i++) {
             Equipment item = items.get(i-1);
-            AnchorPoint anchorPoint = getAnchorPointAt(i);
-            anchorPoint.setItem(item);
+            this.capacity += item.getWeight(); // zodat monster altijd item kan dragen
+            item.setOwner(this);
         }
     }
 

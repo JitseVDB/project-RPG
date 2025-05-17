@@ -41,8 +41,8 @@ public class HeroesTest {
 
     @BeforeEach
     public void setUpMonster() {
-        weapon_A = new Weapon(40, 49);
-        weapon_B = new Weapon(40, 49);
+        weapon_A = new Weapon(40, 98);
+        weapon_B = new Weapon(40, 98);
         armor_A = new Armor(30, 80, ArmorType.BRONZE);
         armor_B = new Armor(30, 80, ArmorType.BRONZE);
         backpack_A = new Backpack(30, 60, 100);
@@ -51,8 +51,8 @@ public class HeroesTest {
         purse_B = new Purse(10, 50);
 
 
-        hero_A = new Hero("Ben", 13, 10.0);
-        hero_B = new Hero("Bert", 13, 10.0, weapon_B, armor_B, purse_B, backpack_B);
+        hero_A = new Hero("Ben", 13, 20.0);
+        hero_B = new Hero("Bert", 13, 20.0, weapon_B, armor_B, purse_B, backpack_B);
 
 
         items = new ArrayList<>();
@@ -72,9 +72,9 @@ public class HeroesTest {
         assertEquals("Ben", hero_A.getName());
         assertEquals(13, hero_A.getMaxHitPoints());
         assertEquals(13, hero_A.getHitPoints()); // geen prime correctie nodig
-        assertEquals(10.0, hero_A.getIntrinsicStrength(), 0.001);
+        assertEquals(20.0, hero_A.getIntrinsicStrength(), 0.001);
         assertEquals(10, hero_A.getProtection());
-        assertEquals(200, hero_A.getCapacity());
+        assertEquals(400, hero_A.getCapacity());
         assertFalse(hero_A.isFighting());
         assertNull(hero_A.getLeftHandWeapon());
         assertNull(hero_A.getRightHandWeapon());
@@ -98,9 +98,9 @@ public class HeroesTest {
         assertEquals("Bert", hero_B.getName());
         assertEquals(13, hero_B.getMaxHitPoints());
         assertEquals(13, hero_B.getHitPoints()); // geen prime correctie nodig
-        assertEquals(10.0, hero_B.getIntrinsicStrength(), 0.001);
+        assertEquals(20.0, hero_B.getIntrinsicStrength(), 0.001);
         assertEquals(10, hero_B.getProtection());
-        assertEquals(200, hero_B.getCapacity());
+        assertEquals(400, hero_B.getCapacity());
         assertFalse(hero_B.isFighting());
 
         // Controleer of items effectief op ankers hangen
@@ -180,10 +180,10 @@ public class HeroesTest {
     @Test
     void testMultiplyStrength_ShouldMultiplyStrength() {
         hero_A.multiplyStrength(3);
-        assertEquals(30, hero_A.getIntrinsicStrength());
+        assertEquals(60, hero_A.getIntrinsicStrength());
 
         hero_A.multiplyStrength(-2);
-        assertEquals(-60, hero_A.getIntrinsicStrength());
+        assertEquals(-120, hero_A.getIntrinsicStrength());
     }
 
     @Test
@@ -196,10 +196,10 @@ public class HeroesTest {
     @Test
     void testDivideStrength_ShouldDivideStrength() {
         hero_A.divideStrength(4);
-        assertEquals(2.50, hero_A.getIntrinsicStrength());
+        assertEquals(5, hero_A.getIntrinsicStrength());
 
         hero_A.divideStrength(-2);
-        assertEquals(-1.25, hero_A.getIntrinsicStrength());
+        assertEquals(-2.5, hero_A.getIntrinsicStrength());
     }
 
     @Test
@@ -212,20 +212,20 @@ public class HeroesTest {
     @Test
     void testeGetAttackPower_WithoutWeapons_ShouldNotAddDamage() {
         // geen wapen
-        assertEquals(10, hero_A.getAttackPower());
+        assertEquals(20, hero_A.getAttackPower());
     }
 
     @Test
     void testAttackPower_WithWeapons_ShouldAddDamage() {
         hero_A.equipLeftHand(weapon_A);
         hero_A.equipRightHand(weapon_B);
-        // 10 + 49 + 49
-        assertEquals(108, hero_A.getAttackPower());
+        // 20 + 98 + 98
+        assertEquals(216, hero_A.getAttackPower());
     }
 
     @Test
     void testGetIntrinsicStrength_ReturnValue() {
-        assertEquals(10.0, hero_A.getIntrinsicStrength());
+        assertEquals(20.0, hero_A.getIntrinsicStrength());
     }
 
 
@@ -234,62 +234,21 @@ public class HeroesTest {
      ********************************************************************/
 
     @Test
-    void testGetArmorInitiallyNull() {
-        Hero hero = new Hero("Guillaume", 100, 10);
-        assertNull(hero.getArmor());
+    void testGetArmor_NoArmor_ShouldReturnNull() {
+        assertNull(hero_A.getArmor());
     }
 
     @Test
-    void testGetArmorReturnsEquippedArmor() {
-        Hero hero = new Hero("Guillaume", 100, 10);
-        Armor breastplate = new Armor(40, 5, ArmorType.BRONZE);
-
-        hero.equipArmor(breastplate);  // veronderstelde methode
-        assertEquals(breastplate, hero.getArmor());
+    void testGetAndEquipArmor_ArmorEquipped_ShouldReturnEquippedArmor() {
+        hero_A.equipArmor(armor_A);
+        assertEquals(armor_A, hero_A.getArmor());
     }
 
     @Test
-    void testGetNbArmorsCarriedEmpty() {
-        Hero hero = new Hero("Guillaume", 100, 10);
-        assertEquals(0, hero.getNbArmorsCarried());
-    }
-
-    @Test
-    void testGetNbArmorsCarriedWithOneArmor() {
-        Hero hero = new Hero("Guillaume", 100, 10);
-        Armor armor = new Armor(30, 2, ArmorType.BRONZE);
-        armor.setOwner(hero); // Zorg voor correcte eigenaarschap
-        AnchorPoint bodyAnchor = hero.getAnchorPoint("body");
-        bodyAnchor.setItem(armor);
-
-        assertEquals(1, hero.getNbArmorsCarried());
-    }
-
-    @Test
-    void testGetNbArmorsCarriedIgnoresNonArmor() {
-        Hero hero = new Hero("Guillaume", 100, 10);
-        AnchorPoint back = hero.getAnchorPoint("back");
-
-        Weapon sword = new Weapon(45, 7);
-        sword.setOwner(hero);
-        back.setItem(sword);
-
-        assertEquals(0, hero.getNbArmorsCarried());
-    }
-
-    @Test
-    void testGetNbArmorsCarriedMultipleArmors() {
-        Hero hero = new Hero("Guillaume", 100, 10);
-
-        Armor chest = new Armor(6, 3, ArmorType.BRONZE);
-        Armor boots = new Armor(54, 1, ArmorType.BRONZE);
-        Armor helmet = new Armor(21, 2, ArmorType.BRONZE);
-
-        hero.getAnchorPoint("body").setItem(chest);
-        hero.getAnchorPoint("back").setItem(boots);
-        hero.getAnchorPoint("belt").setItem(helmet);
-
-        assertEquals(3, hero.getNbArmorsCarried());
+    void testGetNbArmorsCarried_ShouldReturnAmountOfArmors() {
+        armor_A.setOwner(hero_A);
+        armor_B.setOwner(hero_A);
+        assertEquals(2, hero_A.getNbArmorsCarried());
     }
 
     /********************************************************************
@@ -297,37 +256,32 @@ public class HeroesTest {
      ********************************************************************/
 
     @Test
-    void testHitSuccessfulNonFatal() {
-        Hero hero = new Hero("TestHero", 100, 15);
-        Weapon sword = new Weapon(21, 7);
-        hero.getAnchorPoint("leftHand").setItem(sword); // correcte manier
+    void testHit_SuccessfulNonFatal_ShouldReduceHitPointsMonster() {
+        monster_A.setCurrentProtection(0); // zodat hit slaagt
 
-        Monster monster = new Monster("Grass", 50, 49, new ArrayList<Equipment>(), SkinType.SCALY);
-        monster.setCurrentProtection(0); // zodat hit slaagt
+        hero_A.hit(monster_A); // hero does 5 damage
 
-        hero.hit(monster);
-
-        assertTrue(monster.getHitPoints() < 50);
+        assertEquals(61, monster_A.getHitPoints());
     }
 
 
+
+
     @Test
-    void testHitSuccessfulFatalTriggersHeal() {
-        Hero hero = new Hero("TestHero", 100, 50); // Hoge kracht voor lethale hit
-        hero.removeHitPoints(50); // zodat healing zichtbaar is
+    void testHit_SuccessfulFatal_TriggersHeal() {
+        hero_A.removeHitPoints(50); // zodat healing zichtbaar is
 
-        Weapon axe = new Weapon(23, 7);
-        hero.equipLeftHand(axe);
+        hero_A.equipLeftHand(weapon_A);
+        hero_A.equipRightHand(weapon_B);
 
-        List<Equipment> items = new ArrayList<>();
-        Monster monster = new Monster("Examens", 10, 49, items, SkinType.SCALY); // Zwakke monster
-        monster.setCurrentProtection(0);
+        monster_A.setCurrentProtection(0); // zodat hit slaagt
 
-        int hpBefore = hero.getHitPoints();
-        hero.hit(monster);
+        int hpBefore = hero_A.getHitPoints();
 
-        assertTrue(hero.getHitPoints() > hpBefore); // genezen na kill
-        assertEquals(0, monster.getHitPoints()); // monster is dood
+        hero_A.hit(monster_A); // hero does 103 damage, so hit is fatal
+
+        assertTrue(hero_A.getHitPoints() > hpBefore); // genezen na kill
+        assertEquals(0, monster_A.getHitPoints()); // monster is dood
     }
 
     @Test

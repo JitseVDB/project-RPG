@@ -506,16 +506,18 @@ public class Hero extends Entity {
         Map<String, Equipment> loot = monster.getAnchors();
 
         for (Equipment item : loot.values()) {
-            try {
-                item.setOwner(this); // stel eigenaar in en checkt ook of dit mag/kan
-            } catch (IllegalArgumentException e) {
-                // Dit item past niet in de hero, probeer in backpack te steken
-                for (Equipment heroItem : getAllItems()) {
-                    if (heroItem instanceof Backpack) {
-                        try {
-                            item.setBackpack((Backpack) heroItem); // steek item in backpack als kan/mag
-                        } catch (IllegalArgumentException a) {
-                            // Dit item past niet in de hero, probeer de volgende
+            if (item != null) {
+                try {
+                    item.setOwner(this); // stel eigenaar in en checkt ook of dit mag/kan
+                } catch (IllegalArgumentException e) {
+                    // Dit item past niet in de hero, probeer in backpack te steken
+                    for (Equipment heroItem : getAllItems()) {
+                        if (heroItem instanceof Backpack) {
+                            try {
+                                item.setBackpack((Backpack) heroItem); // steek item in backpack als kan/mag
+                            } catch (IllegalArgumentException a) {
+                                // Dit item past niet in de hero, probeer de volgende
+                            }
                         }
                     }
                 }

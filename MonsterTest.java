@@ -54,9 +54,13 @@ public class MonsterTest {
         items.add(purse_A);
 
         monster_A = new Monster("Tom", 70, 49, items, SkinType.SCALY);
-        // 1. Adds two anchorpoints because we have to have 2 free anchorpoints for the tests
-        monster_A.addAnchorPoint(new AnchorPoint(null));
-        monster_A.addAnchorPoint(new AnchorPoint(null));
+        // 1. Adds 6 anchorpoints because we have to have 2 free anchorpoints for the tests and have to make sure every item also has an anchorpoint to be added on.
+        monster_A.addAnchorPoint(new AnchorPoint("anchor_1"));
+        monster_A.addAnchorPoint(new AnchorPoint("anchor_2"));
+        monster_A.addAnchorPoint(new AnchorPoint("anchor_3"));
+        monster_A.addAnchorPoint(new AnchorPoint("anchor_4"));
+        monster_A.addAnchorPoint(new AnchorPoint("anchor_5"));
+        monster_A.addAnchorPoint(new AnchorPoint("anchor_6"));
     }
 
     /**
